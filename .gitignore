@@ -1,1 +1,10 @@
-apps/Frequalizer
+local.properties
+.idea
+.cxx
+build
+.gradle
+release-builds
+
+.stamp-juce
+.stamp-frequalizer
+
