@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index ae85d2e..156b48a 100644
+index ae85d2e..0ebb3ef 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index ae85d2e..156b48a 100644
  project(frequalizer VERSION 1.1.0)
  add_subdirectory(External/JUCE)
  
-@@ -18,6 +18,8 @@ if (APPLE)
+@@ -18,8 +18,11 @@ if (APPLE)
      list(APPEND FORMATS "AU")
  endif()
  
@@ -16,8 +16,11 @@ index ae85d2e..156b48a 100644
 +
  # add the plugin targets
  juce_add_plugin(frequalizer
++                NEEDS_CURL TRUE
                  VERSION "1.1.0"
-@@ -38,6 +40,38 @@ juce_add_plugin(frequalizer
+                 COMPANY_NAME "foleysfinest"
+                 PLUGIN_MANUFACTURER_CODE "FFAU"
+@@ -38,6 +41,38 @@ juce_add_plugin(frequalizer
  add_subdirectory(Resources)
  add_subdirectory(Source)
  
@@ -56,7 +59,7 @@ index ae85d2e..156b48a 100644
  # add required flags
  target_link_libraries(frequalizer PRIVATE juce::juce_recommended_warning_flags juce::juce_recommended_config_flags juce::juce_recommended_lto_flags)
  target_link_libraries(frequalizer PRIVATE juce::juce_opengl juce::juce_dsp juce::juce_audio_utils)
-@@ -46,6 +80,28 @@ target_compile_definitions(frequalizer
+@@ -46,6 +81,28 @@ target_compile_definitions(frequalizer
      JUCE_VST3_CAN_REPLACE_VST2=0
      JUCE_WEB_BROWSER=0)
  
@@ -85,7 +88,7 @@ index ae85d2e..156b48a 100644
  # setup the copying to the output folder
  if (APPLE)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/MacOSX)
-@@ -53,7 +109,9 @@ elseif(WIN32)
+@@ -53,7 +110,9 @@ elseif(WIN32)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/VisualStudio2015)
  endif()
  
@@ -97,7 +100,6 @@ index ae85d2e..156b48a 100644
 \ No newline at end of file
 +endforeach()
 +endif ()
-\ No newline at end of file
 diff --git a/External/JUCE b/External/JUCE
 --- a/External/JUCE
 +++ b/External/JUCE
