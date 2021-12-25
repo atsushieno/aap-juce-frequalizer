@@ -4,9 +4,6 @@
 [submodule "external/Frequalizer"]
 	path = external/Frequalizer
 	url = https://github.com/ffAudio/Frequalizer.git
-[submodule "external/JUCE"]
-	path = external/JUCE
-	url = https://github.com/juce-framework/JUCE.git
 [submodule "aap-juce"]
 	path = external/aap-juce
 	url = https://github.com/atsushieno/aap-juce.git
