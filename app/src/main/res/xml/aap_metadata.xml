@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugins xmlns="urn:org.androidaudioplugin.core" xmlns:pp="urn:org.androidaudioplugin.port">
+<plugins xmlns="urn:org.androidaudioplugin.core">
   <plugin name="Frequalizer Free" category="Effect" author="foleysfinest"
           manufacturer="https://foleysfinest.com" unique-id="juceaap:46714f53"
-          library="libfrequalizer_Standalone.so" entrypoint="GetJuceAAPFactoryStandalone"
+          library="libFrequalizer_Standalone.so" entrypoint="GetJuceAAPFactoryStandalone"
           assets="">
+    <extensions>
+      <extension uri="urn://androidaudioplugin.org/extensions/presets/v1"/>
+    </extensions>
+    <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters">
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Globals">
+        <parameter id="0" name="Output" direction="input" minimum="0.0" maximum="2.0"
+                   default="0.25" content="other"/>
+      </parameters>
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Lowest">
+        <parameter id="1" name="Q1: Filter Type" direction="input" minimum="0.0"
+                   maximum="11.0" default="0.008264463394880295" content="other"/>
+        <parameter id="2" name="Q1: Frequency" direction="input" default="0.0" minimum="20.0"
+                   maximum="20000.0" content="other"/>
+        <parameter id="3" name="Q1: Quality" direction="input" minimum="0.1000000014901161"
+                   maximum="10.0" default="0.3998782634735107" content="other"/>
+        <parameter id="4" name="Q1: Gain" direction="input" minimum="0.06309572607278824"
+                   maximum="15.84893321990967" default="0.4146312475204468" content="other"/>
+        <parameter id="5" name="Q1: Active" direction="input" minimum="0.0" maximum="1.0"
+                   default="1.0" content="other"/>
+      </parameters>
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Low">
+        <parameter id="6" name="Q2: Filter Type" direction="input" minimum="0.0"
+                   maximum="11.0" default="0.02479338832199574" content="other"/>
+        <parameter id="7" name="Q2: Frequency" direction="input" minimum="20.0"
+                   maximum="20000.0" default="0.0" content="other"/>
+        <parameter id="8" name="Q2: Quality" direction="input" minimum="0.1000000014901161"
+                   maximum="10.0" default="0.3998782634735107" content="other"/>
+        <parameter id="9" name="Q2: Gain" direction="input" minimum="0.06309572607278824"
+                   maximum="15.84893321990967" default="0.4146312475204468" content="other"/>
+        <parameter id="10" name="Q2: Active" direction="input" minimum="0.0" maximum="1.0"
+                   default="1.0" content="other"/>
+      </parameters>
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Low Mids">
+        <parameter id="11" name="Q3: Filter Type" direction="input" minimum="0.0"
+                   maximum="11.0" default="0.06611570715904236" content="other"/>
+        <parameter id="12" name="Q3: Frequency" direction="input" minimum="20.0"
+                   maximum="20000.0" default="0.0" content="other"/>
+        <parameter id="13" name="Q3: Quality" direction="input" minimum="0.1000000014901161"
+                   maximum="10.0" default="0.3998782634735107" content="other"/>
+        <parameter id="14" name="Q3: Gain" direction="input" minimum="0.06309572607278824"
+                   maximum="15.84893321990967" default="0.4146312475204468" content="other"/>
+        <parameter id="15" name="Q3: Active" direction="input" minimum="0.0" maximum="1.0"
+                   default="1.0" content="other"/>
+      </parameters>
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="High Mids">
+        <parameter id="16" name="Q4: Filter Type" direction="input" minimum="0.0"
+                   maximum="11.0" default="0.06611570715904236" content="other"/>
+        <parameter id="17" name="Q4: Frequency" direction="input" minimum="20.0"
+                   maximum="20000.0" default="0.0" content="other"/>
+        <parameter id="18" name="Q4: Quality" direction="input" minimum="0.1000000014901161"
+                   maximum="10.0" default="0.3998782634735107" content="other"/>
+        <parameter id="19" name="Q4: Gain" direction="input" minimum="0.06309572607278824"
+                   maximum="15.84893321990967" default="0.4146312475204468" content="other"/>
+        <parameter id="20" name="Q4: Active" direction="input" minimum="0.0" maximum="1.0"
+                   default="1.0" content="other"/>
+      </parameters>
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="High">
+        <parameter id="21" name="Q5: Filter Type" direction="input" minimum="0.0"
+                   maximum="11.0" default="0.07438016682863235" content="other"/>
+        <parameter id="22" name="Q5: Frequency" direction="input" minimum="20.0"
+                   maximum="20000.0" default="0.0" content="other"/>
+        <parameter id="23" name="Q5: Quality" direction="input" minimum="0.1000000014901161"
+                   maximum="10.0" default="0.3998782634735107" content="other"/>
+        <parameter id="24" name="Q5: Gain" direction="input" minimum="0.06309572607278824"
+                   maximum="15.84893321990967" default="0.4146312475204468" content="other"/>
+        <parameter id="25" name="Q5: Active" direction="input" minimum="0.0" maximum="1.0"
+                   default="1.0" content="other"/>
+      </parameters>
+      <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Highest">
+        <parameter id="26" name="Q6: Filter Type" direction="input" minimum="0.0"
+                   maximum="11.0" default="0.09090909361839294" content="other"/>
+        <parameter id="27" name="Q6: Frequency" direction="input" minimum="20.0"
+                   maximum="20000.0" default="0.0" content="other"/>
+        <parameter id="28" name="Q6: Quality" direction="input" minimum="0.1000000014901161"
+                   maximum="10.0" default="0.3998782634735107" content="other"/>
+        <parameter id="29" name="Q6: Gain" direction="input" minimum="0.06309572607278824"
+                   maximum="15.84893321990967" default="0.4146312475204468" content="other"/>
+        <parameter id="30" name="Q6: Active" direction="input" minimum="0.0" maximum="1.0"
+                   default="1.0" content="other"/>
+      </parameters>
+    </parameters>
     <ports>
-      <ports name="Globals">
-        <port name="Output" direction="input" pp:maximum="2.0" pp:default="0.25"
-              content="other"/>
-      </ports>
-      <ports name="Lowest">
-        <port name="Q1: Filter Type" direction="input" pp:maximum="11.0" pp:default="0.008264463394880295"
-              content="other"/>
-        <port name="Q1: Frequency" direction="input" pp:default="0.0" pp:minimum="20.0"
-              pp:maximum="20000.0" content="other"/>
-        <port name="Q1: Quality" direction="input" pp:minimum="0.1000000014901161"
-              pp:maximum="10.0" pp:default="0.3998782634735107" content="other"/>
-        <port name="Q1: Gain" direction="input" pp:minimum="0.06309572607278824"
-              pp:maximum="15.84893321990967" pp:default="0.4146312475204468"
-              content="other"/>
-        <port name="Q1: Active" direction="input" pp:maximum="1.0" pp:default="1.0"
-              content="other"/>
-      </ports>
-      <ports name="Low">
-        <port name="Q2: Filter Type" direction="input" pp:maximum="11.0" pp:default="0.02479338832199574"
-              content="other"/>
-        <port name="Q2: Frequency" direction="input" pp:minimum="20.0" pp:maximum="20000.0"
-              pp:default="0.0" content="other"/>
-        <port name="Q2: Quality" direction="input" pp:minimum="0.1000000014901161"
-              pp:maximum="10.0" pp:default="0.3998782634735107" content="other"/>
-        <port name="Q2: Gain" direction="input" pp:minimum="0.06309572607278824"
-              pp:maximum="15.84893321990967" pp:default="0.4146312475204468"
-              content="other"/>
-        <port name="Q2: Active" direction="input" pp:maximum="1.0" pp:default="1.0"
-              content="other"/>
-      </ports>
-      <ports name="Low Mids">
-        <port name="Q3: Filter Type" direction="input" pp:maximum="11.0" pp:default="0.06611570715904236"
-              content="other"/>
-        <port name="Q3: Frequency" direction="input" pp:minimum="20.0" pp:maximum="20000.0"
-              pp:default="0.0" content="other"/>
-        <port name="Q3: Quality" direction="input" pp:minimum="0.1000000014901161"
-              pp:maximum="10.0" pp:default="0.3998782634735107" content="other"/>
-        <port name="Q3: Gain" direction="input" pp:minimum="0.06309572607278824"
-              pp:maximum="15.84893321990967" pp:default="0.4146312475204468"
-              content="other"/>
-        <port name="Q3: Active" direction="input" pp:maximum="1.0" pp:default="1.0"
-              content="other"/>
-      </ports>
-      <ports name="High Mids">
-        <port name="Q4: Filter Type" direction="input" pp:maximum="11.0" pp:default="0.06611570715904236"
-              content="other"/>
-        <port name="Q4: Frequency" direction="input" pp:minimum="20.0" pp:maximum="20000.0"
-              pp:default="0.0" content="other"/>
-        <port name="Q4: Quality" direction="input" pp:minimum="0.1000000014901161"
-              pp:maximum="10.0" pp:default="0.3998782634735107" content="other"/>
-        <port name="Q4: Gain" direction="input" pp:minimum="0.06309572607278824"
-              pp:maximum="15.84893321990967" pp:default="0.4146312475204468"
-              content="other"/>
-        <port name="Q4: Active" direction="input" pp:maximum="1.0" pp:default="1.0"
-              content="other"/>
-      </ports>
-      <ports name="High">
-        <port name="Q5: Filter Type" direction="input" pp:maximum="11.0" pp:default="0.07438016682863235"
-              content="other"/>
-        <port name="Q5: Frequency" direction="input" pp:minimum="20.0" pp:maximum="20000.0"
-              pp:default="0.0" content="other"/>
-        <port name="Q5: Quality" direction="input" pp:minimum="0.1000000014901161"
-              pp:maximum="10.0" pp:default="0.3998782634735107" content="other"/>
-        <port name="Q5: Gain" direction="input" pp:minimum="0.06309572607278824"
-              pp:maximum="15.84893321990967" pp:default="0.4146312475204468"
-              content="other"/>
-        <port name="Q5: Active" direction="input" pp:maximum="1.0" pp:default="1.0"
-              content="other"/>
-      </ports>
-      <ports name="Highest">
-        <port name="Q6: Filter Type" direction="input" pp:maximum="11.0" pp:default="0.09090909361839294"
-              content="other"/>
-        <port name="Q6: Frequency" direction="input" pp:minimum="20.0" pp:maximum="20000.0"
-              pp:default="0.0" content="other"/>
-        <port name="Q6: Quality" direction="input" pp:minimum="0.1000000014901161"
-              pp:maximum="10.0" pp:default="0.3998782634735107" content="other"/>
-        <port name="Q6: Gain" direction="input" pp:minimum="0.06309572607278824"
-              pp:maximum="15.84893321990967" pp:default="0.4146312475204468"
-              content="other"/>
-        <port name="Q6: Active" direction="input" pp:maximum="1.0" pp:default="1.0"
-              content="other"/>
-      </ports>
       <port direction="output" content="audio" name="Left"/>
       <port direction="output" content="audio" name="Right"/>
       <port direction="input" content="audio" name="Left"/>
       <port direction="input" content="audio" name="Right"/>
+      <port direction="input" content="midi2" name="MIDI input"/>
     </ports>
   </plugin>
 </plugins>

@@ -5,7 +5,7 @@ plugins {
 
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "org.androidaudioplugin.samples.frequalizer"
         minSdkVersion    29
-        targetSdkVersion 31
+        targetSdkVersion 33
         externalNativeBuild {
             cmake {
                 arguments "-DJUCE_DIR=${System.env.JUCE_DIR != null ? System.env.JUCE_DIR : "../external/Frequalizer/External/JUCE"}", "-DAAP_DIR=${System.env.AAP_DIR != null ? System.env.AAP_DIR : ''}", "-DAAP_JUCE_DIR=${System.env.AAP_JUCE_DIR != null ? System.env.AAP_JUCE_DIR : ''}", "-DANDROID_STL=c++_static", "-DANDROID_CPP_FEATURES=exceptions rtti"
@@ -32,7 +32,8 @@ android {
 
     dependencies {
         implementation "androidx.startup:startup-runtime:1.1.1"
-        implementation "org.androidaudioplugin:androidaudioplugin:0.7.0"
+        implementation "dev.atsushieno:libcxx-provider:$ndk_version"
+        implementation "org.androidaudioplugin:androidaudioplugin:0.7.4"
     }
 
     lintOptions {
@@ -40,7 +41,7 @@ android {
     }
 }
 dependencies {
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.9.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
