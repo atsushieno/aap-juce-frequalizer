@@ -3,7 +3,7 @@
 <plugins xmlns="urn:org.androidaudioplugin.core">
   <plugin name="Frequalizer Free" category="Effect" author="foleysfinest"
           manufacturer="https://foleysfinest.com" unique-id="juceaap:46714f53"
-          library="libFrequalizer_Standalone.so" entrypoint="GetJuceAAPFactoryStandalone"
+          library="libfrequalizer_Standalone.so" entrypoint="GetJuceAAPFactoryStandalone"
           assets="">
     <extensions>
       <extension uri="urn://androidaudioplugin.org/extensions/presets/v1"/>
