@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.androidaudioplugin.samples.frequalizer"
+        applicationId "org.androidaudioplugin.ports.juce.frequalizer"
         minSdkVersion    29
         targetSdkVersion 33
         externalNativeBuild {
@@ -34,10 +34,6 @@ android {
         implementation "androidx.startup:startup-runtime:1.1.1"
         implementation "dev.atsushieno:libcxx-provider:$ndk_version"
         implementation "org.androidaudioplugin:androidaudioplugin:$aap_version"
-    }
-
-    lintOptions {
-        abortOnError false
     }
 }
 dependencies {

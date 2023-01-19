@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugins xmlns="urn:org.androidaudioplugin.core">
-  <plugin name="Frequalizer Free" category="Effect" author="foleysfinest"
-          manufacturer="https://foleysfinest.com" unique-id="juceaap:46714f53"
+  <plugin name="AAP Frequalizer Free" category="Effect" author="AAP / foleysfinest"
+          manufacturer="https://github.com/atsushieno/aap-juce-frequalizer" unique-id="juceaap:46714f53"
           library="libfrequalizer_Standalone.so" entrypoint="GetJuceAAPFactoryStandalone"
           assets="">
     <extensions>
