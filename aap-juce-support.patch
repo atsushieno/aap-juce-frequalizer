@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index ae85d2e..7815892 100644
+index ae85d2e..a5e5699 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,4 +1,4 @@
@@ -20,7 +20,7 @@ index ae85d2e..7815892 100644
                  VERSION "1.1.0"
                  COMPANY_NAME "foleysfinest"
                  PLUGIN_MANUFACTURER_CODE "FFAU"
-@@ -38,6 +41,37 @@ juce_add_plugin(frequalizer
+@@ -38,6 +41,39 @@ juce_add_plugin(frequalizer
  add_subdirectory(Resources)
  add_subdirectory(Source)
  
@@ -30,10 +30,11 @@ index ae85d2e..7815892 100644
 +include_directories(
 +        "${AAP_DIR}/include"
 +        )
-+juce_add_module(${AAP_JUCE_DIR}/modules/juceaap_audio_plugin_client)
++juce_add_module(${AAP_JUCE_DIR}/aap-modules/juceaap_audio_plugin_client)
 +
 +# begin Android specifics -->
 +# It is not beautiful, but there does not seem to be any way to add custom include directory for modules.
++
 +
 +if (ANDROID)
 +
@@ -50,6 +51,7 @@ index ae85d2e..7815892 100644
 +        "${OBOE_DIR}/include"
 +        )
 +
++add_compile_definitions([[JUCE_DONT_AUTO_OPEN_MIDI_DEVICES_ON_MOBILE=1]])
 +endif (ANDROID)
 +# <-- end Android specifics
 +# <-- end AAP specifics
@@ -58,7 +60,7 @@ index ae85d2e..7815892 100644
  # add required flags
  target_link_libraries(frequalizer PRIVATE juce::juce_recommended_warning_flags juce::juce_recommended_config_flags juce::juce_recommended_lto_flags)
  target_link_libraries(frequalizer PRIVATE juce::juce_opengl juce::juce_dsp juce::juce_audio_utils)
-@@ -46,6 +80,28 @@ target_compile_definitions(frequalizer
+@@ -46,6 +82,28 @@ target_compile_definitions(frequalizer
      JUCE_VST3_CAN_REPLACE_VST2=0
      JUCE_WEB_BROWSER=0)
  
@@ -87,7 +89,7 @@ index ae85d2e..7815892 100644
  # setup the copying to the output folder
  if (APPLE)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/MacOSX)
-@@ -53,7 +109,9 @@ elseif(WIN32)
+@@ -53,7 +111,9 @@ elseif(WIN32)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/VisualStudio2015)
  endif()
  
