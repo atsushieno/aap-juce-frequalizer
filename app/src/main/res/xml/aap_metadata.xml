@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugins xmlns="urn:org.androidaudioplugin.core">
-  <plugin name="AAP Frequalizer Free" category="Effect" author="AAP / foleysfinest"
-          manufacturer="https://github.com/atsushieno/aap-juce-frequalizer" unique-id="juceaap:46714f53"
-          library="libfrequalizer_Standalone.so" entrypoint="GetJuceAAPFactoryStandalone"
-          assets="">
+  <plugin name="Frequalizer Free" category="Effect" author="foleysfinest"
+          developer="foleysfinest" unique-id="juceaap:46714f53" library="libFrequalizer_Standalone.so"
+          entrypoint="GetJuceAAPFactoryStandalone">
     <extensions>
-      <extension uri="urn://androidaudioplugin.org/extensions/presets/v1"/>
+      <extension uri="urn://androidaudioplugin.org/extensions/plugin-info/v2"/>
+      <extension uri="urn://androidaudioplugin.org/extensions/presets/v2"/>
+      <extension uri="urn://androidaudioplugin.org/extensions/state/v2"/>
+      <extension uri="urn://androidaudioplugin.org/extensions/midi2/v2"/>
+      <extension uri="urn://androidaudioplugin.org/extensions/gui/v2"/>
     </extensions>
     <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters">
       <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Globals">
@@ -16,8 +19,8 @@
       <parameters xmlns="urn://androidaudioplugin.org/extensions/parameters" name="Lowest">
         <parameter id="1" name="Q1: Filter Type" direction="input" minimum="0.0"
                    maximum="11.0" default="0.008264463394880295" content="other"/>
-        <parameter id="2" name="Q1: Frequency" direction="input" default="0.0" minimum="20.0"
-                   maximum="20000.0" content="other"/>
+        <parameter id="2" name="Q1: Frequency" direction="input" minimum="20.0"
+                   maximum="20000.0" default="0.0" content="other"/>
         <parameter id="3" name="Q1: Quality" direction="input" minimum="0.1000000014901161"
                    maximum="10.0" default="0.3998782634735107" content="other"/>
         <parameter id="4" name="Q1: Gain" direction="input" minimum="0.06309572607278824"

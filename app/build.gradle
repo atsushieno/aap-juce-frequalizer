@@ -8,6 +8,7 @@ android {
     compileSdkVersion 33
     externalNativeBuild {
         cmake {
+            version "3.22.1"
             path "CMakeLists.txt"
         }
     }
@@ -37,4 +38,6 @@ android {
         implementation libs.libcxx.provider
         implementation libs.aap.core
     }
+
+    ndkVersion libs.versions.ndk.get()
 }
