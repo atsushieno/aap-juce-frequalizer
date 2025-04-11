@@ -4,7 +4,5 @@ local.properties
 build
 .gradle
 dist
-
-.stamp-juce
-.stamp-frequalizer
-
+app/src/main/res/drawable/ic_launcher.png
+.DS_Store
