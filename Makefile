@@ -17,4 +17,11 @@ APP_ICON=$(APP_SRC_DIR)/Resources/Logo-FF.png
 PATCH_FILE=$(PWD)/aap-juce-support.patch
 PATCH_DEPTH=1
 
+JUCE_PATCHES = \
+	$(AAP_JUCE_DIR)/juce-patches/6.0.5/disable-cgwindowlistcreateimage.patch \
+	$(AAP_JUCE_DIR)/juce-patches/6.0.5/support-plugin-ui.patch \
+	$(AAP_JUCE_DIR)/juce-patches/6.0.5/juce-component-peer-view-touch.patch
+JUCE_PATCH_DEPTH=1
+
+
 include $(AAP_JUCE_DIR)/Makefile.cmake-common
