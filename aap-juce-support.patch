@@ -1,97 +1,75 @@
+diff --git a/.gitignore b/.gitignore
+index 484be44..1ff2a3d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,4 @@
+ **/.DS_Store
+ Builds
+ build
++External/JUCE
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index ae85d2e..d016569 100644
+index 45d236a..95268e0 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -1,4 +1,4 @@
--cmake_minimum_required(VERSION 3.13.0)
-+cmake_minimum_required(VERSION 3.15.0)
- project(frequalizer VERSION 1.1.0)
- add_subdirectory(External/JUCE)
- 
-@@ -18,8 +18,11 @@ if (APPLE)
+@@ -20,6 +20,11 @@ if (APPLE)
      list(APPEND FORMATS "AU")
  endif()
  
-+set(FORMATS "Standalone")
++if (ANDROID)
++    # AAP loads the plugin via the Standalone target (GetJuceAAPFactoryStandalone).
++    set(FORMATS "Standalone")
++endif()
 +
  # add the plugin targets
  juce_add_plugin(frequalizer
-+                NEEDS_CURL TRUE
-                 VERSION "1.1.0"
                  COMPANY_NAME "foleysfinest"
-                 PLUGIN_MANUFACTURER_CODE "FFAU"
-@@ -38,6 +41,66 @@ juce_add_plugin(frequalizer
+@@ -39,6 +44,41 @@ juce_add_plugin(frequalizer
  add_subdirectory(Resources)
  add_subdirectory(Source)
  
 +# begin AAP specifics -->
-+set (APP_NAME frequalizer)
-+set (OBOE_DIR External/JUCE/modules/juce_audio_devices/native/oboe)
 +
-+# They are needed in desktop too, for generate-aap-metadata.
-+include_directories(
++juce_add_modules(${AAP_JUCE_DIR}/aap-modules/aap_audio_processors)
++
++# They are needed in desktop builds too, for generate-aap-metadata.
++target_include_directories(frequalizer PUBLIC
 +        "${AAP_DIR}/include"
++        "${AAP_JUCE_DIR}/aap-modules"
 +)
 +
-+add_definitions([[-DJUCE_PUSH_NOTIFICATIONS_ACTIVITY="com/rmsl/juce/JuceActivity"]])
-+target_compile_definitions(${APP_NAME} PUBLIC
-+        )
++target_compile_definitions(frequalizer PUBLIC
++        JUCEAAP_HAVE_AUDIO_PLAYHEAD_NEW_POSITION_INFO=1
++        JUCE_PUSH_NOTIFICATIONS=1
++        JUCE_PUSH_NOTIFICATIONS_ACTIVITY="com/rmsl/juce/JuceActivity"
++)
 +
 +message("AAP_DIR: ${AAP_DIR}")
 +message("AAP_JUCE_DIR: ${AAP_JUCE_DIR}")
-+juce_add_modules(${AAP_JUCE_DIR}/aap-modules/aap_audio_processors)
 +
 +if (ANDROID)
-+    add_library("cpufeatures" STATIC "${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c")
-+    set_source_files_properties("${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c" PROPERTIES COMPILE_FLAGS "-Wno-sign-conversion -Wno-gnu-statement-expression")
-+
-+    # dependencies
-+    find_library(log "log")
-+    find_library(android "android")
-+    find_library(glesv2 "GLESv2")
-+    find_library(egl "EGL")
-+    find_package(androidaudioplugin CONFIG REQUIRED)
-+    set(cpufeatures_lib "cpufeatures")
-+
-+    target_include_directories(${APP_NAME} PRIVATE
-+            "${ANDROID_NDK}/sources/android/cpufeatures"
-+            )
-+
 +    add_compile_definitions(
-+		[[JUCE_ANDROID=1]]
-+		[[JUCE_DONT_AUTO_OPEN_MIDI_DEVICES_ON_MOBILE=1]]
-+		[[JUCE_PUSH_NOTIFICATIONS_ACTIVITY="com/rmsl/juce/JuceActivity"]]
-+		[[JUCE_PUSH_NOTIFICATIONS=1]]
-+        [[JUCE_USE_ANDROID_OBOE=0]] # we don't need it at plugin side
++            [[JUCE_ANDROID=1]]
++            [[JUCE_DONT_AUTO_OPEN_MIDI_DEVICES_ON_MOBILE=1]]
 +    )
 +
-+    target_link_libraries(${APP_NAME}
-+        PRIVATE
-+        ${log}
-+        ${android}
-+        ${glesv2}
-+        ${egl}
-+        ${cpufeatures_lib}
++    find_package(androidaudioplugin REQUIRED CONFIG)
++    target_link_libraries(frequalizer PRIVATE
++            androidaudioplugin::androidaudioplugin
 +    )
 +endif (ANDROID)
 +
-+target_link_libraries(${APP_NAME}
-+        PRIVATE
-+        androidaudioplugin::androidaudioplugin
-+        aap_audio_processors
-+        )
-+# <-- end Android specifics
-+# <-- end AAP specifics
++target_link_libraries(frequalizer PRIVATE aap_audio_processors)
 +
++# <-- end AAP specifics
 +
  # add required flags
  target_link_libraries(frequalizer PRIVATE juce::juce_recommended_warning_flags juce::juce_recommended_config_flags juce::juce_recommended_lto_flags)
  target_link_libraries(frequalizer PRIVATE juce::juce_opengl juce::juce_dsp juce::juce_audio_utils)
-@@ -53,7 +116,9 @@ elseif(WIN32)
+@@ -54,7 +94,9 @@ elseif(WIN32)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/VisualStudio2015)
  endif()
  
-+if (0)
++if (NOT ANDROID)
  foreach(FORMAT ${FORMATS})
      get_target_property(ARTEFACTS_DIR frequalizer_${FORMAT} LIBRARY_OUTPUT_DIRECTORY)
      add_custom_command(TARGET frequalizer_${FORMAT} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${ARTEFACTS_DIR} ${COPY_FOLDER})
@@ -99,3 +77,64 @@ index ae85d2e..d016569 100644
 \ No newline at end of file
 +endforeach()
 +endif ()
+diff --git a/cmake/Juce.cmake b/cmake/Juce.cmake
+index e639aca..3b32140 100644
+--- a/cmake/Juce.cmake
++++ b/cmake/Juce.cmake
+@@ -15,9 +15,51 @@ option(JUCE_ENABLE_MODULE_SOURCE_GROUPS "Enable Module Source Groups" ON)
+ option(JUCE_BUILD_EXTRAS "Build JUCE Extras" OFF)
+ option(JUCE_BUILD_EXAMPLES "Build JUCE Examples" OFF)
+ 
+-FetchContent_Declare(juce
+-        GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+-        GIT_TAG 7.0.12
+-        GIT_SHALLOW ON)
++# AAP: import JUCE via CPM instead of plain FetchContent, applying the
++# AAP JUCE patches as part of the population. With CPM_SOURCE_CACHE the
++# patched source is shared by all build directories (e.g. per-ABI Android
++# builds) without re-applying the patches, and CUSTOM_CACHE_KEY keeps the
++# cached path deterministic (app/build.gradle compiles the patched JUCE
++# Java sources from there - keep them in sync).
++include(${AAP_JUCE_DIR}/cmake/CPM.cmake)
+ 
+-FetchContent_MakeAvailable(juce)
++# PATCH_COMMAND with git apply, instead of CPM's own PATCHES: `patch`
++# may not be available on Windows, and --ignore-space-change is needed
++# for the patches to apply onto the CRLF sources in the JUCE repo.
++CPMAddPackage(
++        NAME             juce
++        GIT_REPOSITORY   https://github.com/juce-framework/JUCE.git
++        GIT_TAG          7.0.12
++        CUSTOM_CACHE_KEY aap-7.0.12-lifecycle
++        PATCH_COMMAND    git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.12/disable-cgwindowlistcreateimage.patch
++        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.6/support-plugin-ui.patch
++        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.11/juce-component-peer-view-touch.patch
++        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.11/component-peer-view-unregister-lifecycle-callbacks.patch
++        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.12/popup-menu-android.patch
++        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/JUCE-support-Android-CMake.patch
++)
++
++# Guard against a stale source cache entry (e.g. after the patch set
++# changed without changing CUSTOM_CACHE_KEY).
++file(READ "${juce_SOURCE_DIR}/modules/juce_gui_basics/native/java/app/com/rmsl/juce/ComponentPeerView.java" _AAP_JUCE_PATCH_PROBE)
++if(NOT _AAP_JUCE_PATCH_PROBE MATCHES "getLocationOnScreen")
++    message(FATAL_ERROR
++        "JUCE source cache is stale or patch application failed: ${juce_SOURCE_DIR}\n"
++        "Remove that directory and reconfigure.")
++endif()
++
++# Expose the patched JUCE tree at the conventional in-tree location
++# (the Android Gradle build compiles JUCE's Java sources from it). This
++# works wherever the population went, with or without CPM_SOURCE_CACHE.
++if(NOT "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE" STREQUAL "${juce_SOURCE_DIR}")
++    file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/External")
++    file(REMOVE "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE")
++    file(CREATE_LINK "${juce_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE"
++         SYMBOLIC RESULT _AAP_JUCE_LINK_RESULT)
++    # The result is only advisory (a concurrent configuration may have
++    # just (re-)created the same link); what matters is that it resolves.
++    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE/CMakeLists.txt")
++        message(FATAL_ERROR
++            "Could not link External/JUCE to the JUCE tree (${_AAP_JUCE_LINK_RESULT})")
++    endif()
++endif()
