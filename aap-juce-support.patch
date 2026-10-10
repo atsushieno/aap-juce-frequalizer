@@ -8,10 +8,21 @@ index 484be44..1ff2a3d 100644
  build
 +External/JUCE
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 45d236a..95268e0 100644
+index 45d236a..ba68092 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -20,6 +20,11 @@ if (APPLE)
+@@ -1,4 +1,9 @@
+-cmake_minimum_required(VERSION 3.13.0)
++cmake_minimum_required(VERSION 3.22)
++get_filename_component(app_source "${CMAKE_CURRENT_LIST_DIR}" REALPATH)
++add_subdirectory("${app_source}/../aap-juce" "${CMAKE_CURRENT_BINARY_DIR}/aap-juce" EXCLUDE_FROM_ALL)
++aap_juce_configure(JUCE_SOURCE_DIR External/JUCE SOURCE_CACHE "${CPM_SOURCE_CACHE}"
++    JUCE_CPM_ARGS NAME JUCE GIT_REPOSITORY https://github.com/juce-framework/JUCE.git GIT_TAG 7.0.12 CUSTOM_CACHE_KEY aap-7.0.12-lifecycle ICON Resources/Logo-FF.png)
++
+ project(frequalizer VERSION 1.1.1)
+ 
+ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+@@ -20,6 +25,11 @@ if (APPLE)
      list(APPEND FORMATS "AU")
  endif()
  
@@ -23,7 +34,7 @@ index 45d236a..95268e0 100644
  # add the plugin targets
  juce_add_plugin(frequalizer
                  COMPANY_NAME "foleysfinest"
-@@ -39,6 +44,41 @@ juce_add_plugin(frequalizer
+@@ -39,6 +49,41 @@ juce_add_plugin(frequalizer
  add_subdirectory(Resources)
  add_subdirectory(Source)
  
@@ -65,7 +76,7 @@ index 45d236a..95268e0 100644
  # add required flags
  target_link_libraries(frequalizer PRIVATE juce::juce_recommended_warning_flags juce::juce_recommended_config_flags juce::juce_recommended_lto_flags)
  target_link_libraries(frequalizer PRIVATE juce::juce_opengl juce::juce_dsp juce::juce_audio_utils)
-@@ -54,7 +94,9 @@ elseif(WIN32)
+@@ -54,7 +99,9 @@ elseif(WIN32)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/VisualStudio2015)
  endif()
  
@@ -78,10 +89,10 @@ index 45d236a..95268e0 100644
 +endforeach()
 +endif ()
 diff --git a/cmake/Juce.cmake b/cmake/Juce.cmake
-index e639aca..3b32140 100644
+index e639aca..79270ee 100644
 --- a/cmake/Juce.cmake
 +++ b/cmake/Juce.cmake
-@@ -15,9 +15,51 @@ option(JUCE_ENABLE_MODULE_SOURCE_GROUPS "Enable Module Source Groups" ON)
+@@ -15,9 +15,4 @@ option(JUCE_ENABLE_MODULE_SOURCE_GROUPS "Enable Module Source Groups" ON)
  option(JUCE_BUILD_EXTRAS "Build JUCE Extras" OFF)
  option(JUCE_BUILD_EXAMPLES "Build JUCE Examples" OFF)
  
@@ -89,52 +100,6 @@ index e639aca..3b32140 100644
 -        GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
 -        GIT_TAG 7.0.12
 -        GIT_SHALLOW ON)
-+# AAP: import JUCE via CPM instead of plain FetchContent, applying the
-+# AAP JUCE patches as part of the population. With CPM_SOURCE_CACHE the
-+# patched source is shared by all build directories (e.g. per-ABI Android
-+# builds) without re-applying the patches, and CUSTOM_CACHE_KEY keeps the
-+# cached path deterministic (app/build.gradle compiles the patched JUCE
-+# Java sources from there - keep them in sync).
-+include(${AAP_JUCE_DIR}/cmake/CPM.cmake)
- 
+-
 -FetchContent_MakeAvailable(juce)
-+# PATCH_COMMAND with git apply, instead of CPM's own PATCHES: `patch`
-+# may not be available on Windows, and --ignore-space-change is needed
-+# for the patches to apply onto the CRLF sources in the JUCE repo.
-+CPMAddPackage(
-+        NAME             juce
-+        GIT_REPOSITORY   https://github.com/juce-framework/JUCE.git
-+        GIT_TAG          7.0.12
-+        CUSTOM_CACHE_KEY aap-7.0.12-lifecycle
-+        PATCH_COMMAND    git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.12/disable-cgwindowlistcreateimage.patch
-+        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.6/support-plugin-ui.patch
-+        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.11/juce-component-peer-view-touch.patch
-+        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.11/component-peer-view-unregister-lifecycle-callbacks.patch
-+        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/juce-patches/7.0.12/popup-menu-android.patch
-+        COMMAND          git apply --ignore-space-change ${AAP_JUCE_DIR}/JUCE-support-Android-CMake.patch
-+)
-+
-+# Guard against a stale source cache entry (e.g. after the patch set
-+# changed without changing CUSTOM_CACHE_KEY).
-+file(READ "${juce_SOURCE_DIR}/modules/juce_gui_basics/native/java/app/com/rmsl/juce/ComponentPeerView.java" _AAP_JUCE_PATCH_PROBE)
-+if(NOT _AAP_JUCE_PATCH_PROBE MATCHES "getLocationOnScreen")
-+    message(FATAL_ERROR
-+        "JUCE source cache is stale or patch application failed: ${juce_SOURCE_DIR}\n"
-+        "Remove that directory and reconfigure.")
-+endif()
-+
-+# Expose the patched JUCE tree at the conventional in-tree location
-+# (the Android Gradle build compiles JUCE's Java sources from it). This
-+# works wherever the population went, with or without CPM_SOURCE_CACHE.
-+if(NOT "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE" STREQUAL "${juce_SOURCE_DIR}")
-+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/External")
-+    file(REMOVE "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE")
-+    file(CREATE_LINK "${juce_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE"
-+         SYMBOLIC RESULT _AAP_JUCE_LINK_RESULT)
-+    # The result is only advisory (a concurrent configuration may have
-+    # just (re-)created the same link); what matters is that it resolves.
-+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/External/JUCE/CMakeLists.txt")
-+        message(FATAL_ERROR
-+            "Could not link External/JUCE to the JUCE tree (${_AAP_JUCE_LINK_RESULT})")
-+    endif()
-+endif()
++add_subdirectory(External/JUCE "${CMAKE_CURRENT_BINARY_DIR}/JUCE")
