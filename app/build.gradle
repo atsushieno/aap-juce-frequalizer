@@ -18,7 +18,7 @@ android {
         }
         externalNativeBuild {
             cmake {
-                arguments "-DCPM_SOURCE_CACHE=${cpmSourceCacheDir}",
+                arguments "-DCMAKE_BUILD_TYPE=Release", "-DCPM_SOURCE_CACHE=${cpmSourceCacheDir}",
                         "-DANDROID_STL=c++_shared", "-DANDROID_CPP_FEATURES=exceptions rtti" }
         }
     }
