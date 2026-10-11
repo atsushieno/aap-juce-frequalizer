@@ -8,7 +8,7 @@ index 484be44..1ff2a3d 100644
  build
 +External/JUCE
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 45d236a..ba68092 100644
+index 45d236a..22cf25d 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,4 +1,9 @@
@@ -34,49 +34,16 @@ index 45d236a..ba68092 100644
  # add the plugin targets
  juce_add_plugin(frequalizer
                  COMPANY_NAME "foleysfinest"
-@@ -39,6 +49,41 @@ juce_add_plugin(frequalizer
+@@ -39,6 +49,8 @@ juce_add_plugin(frequalizer
  add_subdirectory(Resources)
  add_subdirectory(Source)
  
-+# begin AAP specifics -->
-+
-+juce_add_modules(${AAP_JUCE_DIR}/aap-modules/aap_audio_processors)
-+
-+# They are needed in desktop builds too, for generate-aap-metadata.
-+target_include_directories(frequalizer PUBLIC
-+        "${AAP_DIR}/include"
-+        "${AAP_JUCE_DIR}/aap-modules"
-+)
-+
-+target_compile_definitions(frequalizer PUBLIC
-+        JUCEAAP_HAVE_AUDIO_PLAYHEAD_NEW_POSITION_INFO=1
-+        JUCE_PUSH_NOTIFICATIONS=1
-+        JUCE_PUSH_NOTIFICATIONS_ACTIVITY="com/rmsl/juce/JuceActivity"
-+)
-+
-+message("AAP_DIR: ${AAP_DIR}")
-+message("AAP_JUCE_DIR: ${AAP_JUCE_DIR}")
-+
-+if (ANDROID)
-+    add_compile_definitions(
-+            [[JUCE_ANDROID=1]]
-+            [[JUCE_DONT_AUTO_OPEN_MIDI_DEVICES_ON_MOBILE=1]]
-+    )
-+
-+    find_package(androidaudioplugin REQUIRED CONFIG)
-+    target_link_libraries(frequalizer PRIVATE
-+            androidaudioplugin::androidaudioplugin
-+    )
-+endif (ANDROID)
-+
-+target_link_libraries(frequalizer PRIVATE aap_audio_processors)
-+
-+# <-- end AAP specifics
++aap_juce_plugin(TARGET frequalizer)
 +
  # add required flags
  target_link_libraries(frequalizer PRIVATE juce::juce_recommended_warning_flags juce::juce_recommended_config_flags juce::juce_recommended_lto_flags)
  target_link_libraries(frequalizer PRIVATE juce::juce_opengl juce::juce_dsp juce::juce_audio_utils)
-@@ -54,7 +99,9 @@ elseif(WIN32)
+@@ -54,7 +66,9 @@ elseif(WIN32)
      set(COPY_FOLDER ${CMAKE_SOURCE_DIR}/Builds/VisualStudio2015)
  endif()
  
